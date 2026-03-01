@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f2ede4;
+  --foreground: #2c2c2c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Global scrollbar hide */
+*, *::before, *::after {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* =============================================
+   Floating Header
+   ============================================= */
+.fl-header {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
+  height: 70px;
+  background: rgba(242, 237, 228, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(44, 44, 44, 0.06);
+  border-radius: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 35px;
+  z-index: 9000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: width 0.4s cubic-bezier(0.25,0.1,0.25,1),
+              height 0.4s cubic-bezier(0.25,0.1,0.25,1),
+              background 0.4s ease;
+}
+.fl-header.scrolled {
+  width: 85%;
+  height: 58px;
+  background: rgba(242, 237, 228, 0.85);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.fl-logo {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-decoration: none;
+  color: #2c2c2c;
+  z-index: 9001;
+}
+
+/* Desktop Nav */
+.fl-nav {
+  display: flex;
+  gap: 40px;
+}
+.fl-nav a {
+  text-decoration: none;
+  color: rgba(44, 44, 44, 0.6);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  position: relative;
+  transition: color 0.3s ease;
+}
+.fl-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #4a5d4e;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.fl-nav a:hover {
+  color: #2c2c2c;
+}
+.fl-nav a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* CTA Button */
+.fl-cta {
+  padding: 10px 28px;
+  background: #4a5d4e;
+  color: #fff;
+  border-radius: 30px;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.fl-cta:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(74, 93, 78, 0.3);
+}
+
+/* Burger (mobile) */
+.fl-burger {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  z-index: 9002;
+  padding: 10px;
+  background: none;
+  border: none;
+}
+.fl-burger-line {
+  width: 24px;
+  height: 1.5px;
+  background-color: #2c2c2c;
+  border-radius: 2px;
+  transition: background-color 0.3s;
+}
+
+/* Mobile Overlay */
+.fl-mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #4a5d4e;
+  z-index: 8999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  clip-path: circle(0% at calc(100% - 50px) 45px);
+}
+.fl-mobile-circle {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  background: rgba(242, 237, 228, 0.08);
+  filter: blur(120px);
+  border-radius: 50%;
+  top: 15%;
+  left: 10%;
+  pointer-events: none;
+}
+.fl-mobile-links {
+  list-style: none;
+  text-align: center;
+  padding: 0;
+}
+.fl-mobile-links li {
+  overflow: hidden;
+  margin: 18px 0;
+}
+.fl-mobile-links a {
+  display: block;
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(2.2rem, 7vw, 3.5rem);
+  font-weight: 300;
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  transform: translateY(110%);
+  transition: color 0.3s, -webkit-text-stroke 0.3s;
+}
+.fl-mobile-links a:hover {
+  -webkit-text-stroke: 1px rgba(255,255,255,0.8);
+  color: transparent;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .fl-header {
+    top: 15px;
+    width: 92%;
+    height: 58px;
+    padding: 0 22px;
+  }
+  .fl-header.scrolled {
+    width: 88%;
+    height: 52px;
+  }
+  .fl-nav, .fl-cta {
+    display: none;
+  }
+  .fl-burger {
+    display: flex;
+  }
+}
