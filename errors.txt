@@ -1,0 +1,12 @@
+﻿app/beauty/BeautyClient.tsx(318,56): error TS7006: Parameter 'item' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(318,62): error TS7006: Parameter 'i' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(355,56): error TS7006: Parameter 'line' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(355,62): error TS7006: Parameter 'i' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(420,53): error TS7006: Parameter 'p' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(420,56): error TS7006: Parameter 'i' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(467,76): error TS7006: Parameter 'item' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(467,82): error TS7006: Parameter 'i' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(471,76): error TS7006: Parameter 'item' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(471,82): error TS7006: Parameter 'i' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(561,48): error TS7006: Parameter 'item' implicitly has an 'any' type.
+app/beauty/BeautyClient.tsx(561,54): error TS7006: Parameter 'i' implicitly has an 'any' type.

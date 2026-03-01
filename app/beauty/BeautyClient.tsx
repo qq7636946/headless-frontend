@@ -315,7 +315,7 @@ export default function BeautyClient({ data, posts, categories }: BeautyProps) {
                                     <span className="service-label">BEAUTY SERVICES</span>
                                     <p className="service-desc-mini">{g('beauty_svc_desc', '在我們的皮膚管理中心，我們把每一吋肌膚都當成藝術品來呵護。', m)}</p>
                                     <ul className="service-list" id="service-list">
-                                        {svcItems.map((item, i) => (
+                                        {svcItems.map((item: string, i: number) => (
                                             <li key={i} className={i === 0 ? 'active' : ''} data-index={i} onClick={() => handleSvcClick(i)}>{item}</li>
                                         ))}
                                     </ul>
@@ -352,7 +352,7 @@ export default function BeautyClient({ data, posts, categories }: BeautyProps) {
                         </div>
                         <div className="bottom-quote">
                             <div className="bottom-quote-line"></div>
-                            {svcQuote.split('\n').map((line, i) => <span key={i}>{line}{i < svcQuote.split('\n').length - 1 && <br />}</span>)}
+                            {svcQuote.split('\n').map((line: string, i: number) => <span key={i}>{line}{i < svcQuote.split('\n').length - 1 && <br />}</span>)}
                         </div>
                     </div>
                 </div>
@@ -417,7 +417,7 @@ export default function BeautyClient({ data, posts, categories }: BeautyProps) {
                                 <span className="team-desc-highlight">{g('beauty_team_highlight', '經驗豐富的皮膚科專業團隊，守護你的每一吋肌膚', m)}</span>
                                 {teamDesc[0]}
                             </p>
-                            {teamDesc.slice(1).map((p, i) => <p key={i} className="team-desc">{p}</p>)}
+                            {teamDesc.slice(1).map((p: string, i: number) => <p key={i} className="team-desc">{p}</p>)}
                         </div>
                         <div className="team-btn-wrapper">
                             <div className="team-more-btn" id="btn-magnetic-2">
@@ -464,11 +464,11 @@ export default function BeautyClient({ data, posts, categories }: BeautyProps) {
                             <div className="doctor-exp-grid">
                                 <div className="exp-col">
                                     <h4>{g('beauty_doc_exp1_title', '專業經驗 :', m)}</h4>
-                                    <ul className="exp-list">{docExp1.map((item, i) => <li key={i}>{item}</li>)}</ul>
+                                    <ul className="exp-list">{docExp1.map((item: string, i: number) => <li key={i}>{item}</li>)}</ul>
                                 </div>
                                 <div className="exp-col">
                                     <h4>{g('beauty_doc_exp2_title', '擅長項目 :', m)}</h4>
-                                    <ul className="exp-list">{docExp2.map((item, i) => <li key={i}>{item}</li>)}</ul>
+                                    <ul className="exp-list">{docExp2.map((item: string, i: number) => <li key={i}>{item}</li>)}</ul>
                                 </div>
                             </div>
                             <div className="doctor-gallery">
@@ -558,7 +558,7 @@ export default function BeautyClient({ data, posts, categories }: BeautyProps) {
                         <div className="footer-line"></div>
                         <div className="notice-title">NOTICE 提醒事項</div>
                         <ul className="notice-list">
-                            {footerNotice.map((item, i) => <li key={i}>{item}</li>)}
+                            {footerNotice.map((item: string, i: number) => <li key={i}>{item}</li>)}
                         </ul>
                     </div>
                     <div className="footer-grid">
