@@ -1,480 +1,239 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Column Layout</title>
-    <style>
-        /* Base Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Nudot 的部落格</title>
+      <style>
+              * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+              }
 
-        body {
-            font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-            color: #333;
-            background-color: #fff;
-            line-height: 1.5;
-            padding: 40px 20px;
-        }
+              body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                        color: #333;
+                        padding: 20px;
+                        min-height: 100vh;
+              }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-        }
+              .container {
+                        max-width: 1200px;
+                        margin: 0 auto;
+              }
 
-        /* --- Main Content (Left) --- */
-        .main-content {
-            flex: 1;
-            min-width: 0; /* Prevent flex blowout */
-        }
+              header {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        padding: 60px 40px;
+                        border-radius: 16px;
+                        margin-bottom: 50px;
+                        text-align: center;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+              }
 
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 25px;
-            color: #333;
-        }
+              header h1 {
+                        font-size: 3em;
+                        margin-bottom: 15px;
+                        font-weight: 800;
+              }
 
-        .section-title .dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: #c93636;
-            border-radius: 50%;
-        }
+              header p {
+                        font-size: 1.2em;
+                        opacity: 0.9;
+              }
 
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
+              .posts-grid {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                        gap: 24px;
+                        margin-bottom: 50px;
+              }
 
-        .card {
-            border: 1px dotted #ccc;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            background-color: #fff;
-        }
+              .post-card {
+                        background: white;
+                        border-radius: 12px;
+                        padding: 30px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                        cursor: pointer;
+              }
 
-        .card-image-wrap {
-            width: 100%;
-            height: 200px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            background-color: #f5f5f5;
-        }
+              .post-card:hover {
+                        transform: translateY(-8px);
+                        box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+              }
 
-        .card-image-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+              .post-card h2 {
+                        font-size: 1.5em;
+                        margin-bottom: 15px;
+                        color: #667eea;
+                        line-height: 1.4;
+              }
 
-        .card-date {
-            font-size: 11px;
-            color: #777;
-            margin-bottom: 12px;
-        }
+              .post-meta {
+                        font-size: 0.9em;
+                        color: #999;
+                        margin-bottom: 12px;
+                        display: flex;
+                        gap: 15px;
+              }
 
-        .card-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            line-height: 1.4;
-            color: #222;
-        }
+              .post-card p {
+                        color: #666;
+                        margin-bottom: 20px;
+                        line-height: 1.7;
+                        font-size: 1em;
+              }
 
-        .card-footer {
-            margin-top: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 10px;
-        }
+              .read-more {
+                        display: inline-block;
+                        padding: 12px 28px;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        transition: transform 0.2s, box-shadow 0.2s;
+              }
 
-        .tags-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
+              .read-more:hover {
+                        transform: scale(1.05);
+                        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+              }
 
-        .tag {
-            background-color: #fbecec;
-            color: #666;
-            font-size: 10px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            white-space: nowrap;
-        }
+              .loading {
+                        text-align: center;
+                        padding: 60px 20px;
+                        font-size: 1.3em;
+                        color: #667eea;
+              }
 
-        /* --- Action Button (Red with Arrow) --- */
-        .action-btn {
-            background-color: #c93636;
-            border: none;
-            width: 40px;
-            height: 24px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: background-color 0.2s;
-        }
+              .loading::after {
+                        content: '';
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        border: 3px solid #667eea;
+                        border-top-color: transparent;
+                        border-radius: 50%;
+                        animation: spin 0.8s linear infinite;
+                        margin-left: 10px;
+              }
 
-        .action-btn:hover {
-            background-color: #a82a2a;
-        }
+              @keyframes spin {
+                        to { transform: rotate(360deg); }
+              }
 
-        .action-btn svg {
-            width: 14px;
-            height: 14px;
-            stroke: #fff;
-        }
+              .error {
+                        background: #ffebee;
+                        border: 2px solid #ef5350;
+                        padding: 30px;
+                        border-radius: 12px;
+                        color: #c62828;
+                        margin: 20px 0;
+                        font-weight: 500;
+              }
 
-        /* --- Sidebar (Right) --- */
-        .sidebar {
-            width: 360px;
-            flex-shrink: 0;
-            border-left: 2px solid #f0f0f0;
-            padding-left: 30px;
-        }
+              footer {
+                        background: white;
+                        padding: 30px;
+                        text-align: center;
+                        color: #999;
+                        border-radius: 12px;
+                        margin-top: 50px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+              }
+            </style>
+    </head>
+    <body>
+          <div class="container">
+                  <header>
+                            <h1>📝 Nudot 的部落格</h1>
+                        <p>分享 AI、開發與技術的故事</p>
+                  </header>
+              
+              <div id="posts" class="posts-grid">
+                    <div class="loading">正在加載文章...</div>div>
+              </div>div>
+              
+              <footer>
+                        <p>&copy; 2026 Nudot. 由 WordPress + Vercel + AI 驅動</p>p>
+              </footer>
+          </div>div>
 
-        .ranking-list {
-            display: flex;
-            flex-direction: column;
-        }
+          <script>
+                  const API_URL = 'https://blog.nudot.com.tw/wp-json/wp/v2';
 
-        .ranking-item {
-            display: flex;
-            gap: 15px;
-            padding: 20px 0;
-            border-bottom: 1px dotted #ccc;
-        }
+                  // 從 WordPress 獲取文章
+                  async function fetchPosts() {
+                            try {
+                                        const response = await fetch(`${API_URL}/posts?per_page=12&orderby=date&order=desc`);
 
-        .ranking-item:first-child {
-            padding-top: 0;
-        }
+                                        if (!response.ok) {
+                                                      throw new Error(`HTTP Error: ${response.status}`);
+                                        }
 
-        .ranking-img-wrap {
-            width: 100px;
-            height: 65px;
-            border-radius: 4px;
-            overflow: hidden;
-            flex-shrink: 0;
-            background-color: #f5f5f5;
-        }
+                                        const posts = await response.json();
 
-        .ranking-img-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+                                        if (Array.isArray(posts) && posts.length > 0) {
+                                                      displayPosts(posts);
+                                                      console.log(`成功加載 ${posts.length} 篇文章`);
+                                        } else {
+                                                      document.getElementById('posts').innerHTML = 
+                                                                      '<div class="error">找不到文章</div>';
+                                        }
+                            } catch (error) {
+                                        console.error('API 錯誤:', error);
+                                        document.getElementById('posts').innerHTML = 
+                                                      `<div class="error">
+                                                                  無法載入文章: ${error.message}
+                                                                              <br><small>API: ${API_URL}/posts</small>
+                                                                                        </div>`;
+                            }
+                  }
 
-        .ranking-content {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
+                  // 顯示文章卡片
+                  function displayPosts(posts) {
+                            const html = posts.map(post => {
+                                        const date = new Date(post.date).toLocaleDateString('zh-TW');
+                                        const excerpt = stripHtml(post.excerpt.rendered) || 
+                                                                   stripHtml(post.content.rendered).substring(0, 150);
 
-        .ranking-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
+                                        return `
+                                                  <article class="post-card">
+                                                              <h2>${post.title.rendered}</h2>
+                                                                          <div class="post-meta">
+                                                                                        <span>📅 ${date}</span>
+                                                                                                      ${post.categories && post.categories.length > 0 ? `<span>📂 文章</span>` : ''}
+                                                                                                                  </div>
+                                                                                                                              <p>${excerpt}</p>
+                                                                                                                                          <a href="#post-${post.id}" class="read-more">閱讀全文 →</a>
+                                                                                                                                                    </article>
+                                                                                                                                                            `;
+                            }).join('');
 
-        .rank-badge {
-            font-size: 10px;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 2px;
-            font-weight: bold;
-        }
+                            document.getElementById('posts').innerHTML = html;
+                  }
 
-        .rank-badge.top-3 {
-            background-color: #a88659;
-        }
+                  // 移除 HTML 標籤
+                  function stripHtml(html) {
+                            if (!html) return '';
+                            const tmp = document.createElement('div');
+                            tmp.innerHTML = html;
+                            return (tmp.textContent || tmp.innerText || '').trim();
+                  }
 
-        .rank-badge.others {
-            background-color: #a0a0a0;
-        }
-
-        .ranking-date {
-            font-size: 10px;
-            color: #777;
-        }
-
-        .ranking-title {
-            font-size: 13px;
-            font-weight: bold;
-            line-height: 1.4;
-            margin-bottom: 10px;
-            color: #222;
-        }
-
-        .ranking-action {
-            margin-top: auto;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        /* --- Sidebar Banner --- */
-        .sidebar-banner {
-            margin-top: 30px;
-            border: 1px solid #c93636;
-            border-radius: 4px;
-            padding: 15px;
-            height: 100px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .sidebar-banner img {
-            width: 70px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-            background-color: #eee;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 992px) {
-            .container {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                border-left: none;
-                padding-left: 0;
-                border-top: 2px solid #f0f0f0;
-                padding-top: 30px;
-                margin-top: 20px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <!-- Left Main Content -->
-    <main class="main-content">
-        <h2 class="section-title"><span class="dot"></span>おしアミ新着コラム</h2>
-        
-        <div class="card-grid">
-            <!-- Card 1 -->
-            <article class="card">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&auto=format&fit=crop" alt="オシンテックのやさしい循環経済コラム">
-                </div>
-                <div class="card-date">公開日 2026.06.23</div>
-                <h3 class="card-title">ドイツの「身近な栄養循環」｜ オシンテックのやさしい循環経済コラム</h3>
-                <div class="card-footer">
-                    <div class="tags-wrap">
-                        <span class="tag">#クリティカルミネラル</span>
-                        <span class="tag">#サーキュラーエコノミー</span>
-                        <span class="tag">#環境部門長・マネージャー</span>
-                        <span class="tag">#環境・CSRご担当者</span>
-                        <span class="tag">#海外環境ご担当者</span>
-                    </div>
-                    <button class="action-btn" aria-label="閱讀更多">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
-                </div>
-            </article>
-
-            <!-- Card 2 -->
-            <article class="card">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1534398079543-7ae6d016b86a?q=80&w=600&auto=format&fit=crop" alt="都市の風景">
-                </div>
-                <div class="card-date">更新日 2026.05.27 &nbsp; 公開日 2026.05.25</div>
-                <h3 class="card-title">「循環経済行動計画」で何が変わるのか——“資源制約時代”に、日本企業はどんな循環価値をつくるべきか</h3>
-                <div class="card-footer">
-                    <div class="tags-wrap">
-                        <span class="tag">#サーキュラーデザイン</span>
-                        <span class="tag">#サーキュラーエコノミー</span>
-                        <span class="tag">#廃棄物管理</span>
-                        <span class="tag">#循環型ビジネス</span>
-                        <span class="tag">#廃棄物管理ご担当者</span>
-                        <span class="tag">#環境部門長・マネージャー</span>
-                        <span class="tag">#経営者・役員</span>
-                        <span class="tag">#環境・CSRご担当者</span>
-                    </div>
-                    <button class="action-btn" aria-label="閱讀更多">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
-                </div>
-            </article>
-
-            <!-- Card 3 -->
-            <article class="card">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=600&auto=format&fit=crop" alt="白板討論">
-                </div>
-                <div class="card-date">公開日 2026.05.22</div>
-                <h3 class="card-title">SSBJ時代に問われる「価値創造の見取り図」〜「開示に対応する企業」と「価値創造を語る企業」の違い〜</h3>
-                <div class="card-footer">
-                    <div class="tags-wrap">
-                        <span class="tag">#移行戦略</span>
-                        <span class="tag">#ESG経営</span>
-                        <span class="tag">#サステナビリティ経営</span>
-                        <span class="tag">#循環型ビジネス</span>
-                        <span class="tag">#社会的インパクト評価</span>
-                        <span class="tag">#環境部門長・マネージャー</span>
-                        <span class="tag">#経営者・役員</span>
-                    </div>
-                    <button class="action-btn" aria-label="閱讀更多">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
-                </div>
-            </article>
-
-            <!-- Card 4 -->
-            <article class="card">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&auto=format&fit=crop" alt="オシンテックのやさしい循環経済コラム">
-                </div>
-                <div class="card-date">更新日 2026.06.23 &nbsp; 公開日 2026.05.21</div>
-                <h3 class="card-title">ミラノで紹介された台湾の「循環村」は世界最先端｜オシンテックのやさしい循環経済コラム</h3>
-                <div class="card-footer">
-                    <div class="tags-wrap">
-                        <span class="tag">#サーキュラーデザイン</span>
-                        <span class="tag">#サーキュラーエコノミー</span>
-                        <span class="tag">#環境部門長・マネージャー</span>
-                        <span class="tag">#環境・CSRご担当者</span>
-                        <span class="tag">#海外環境ご担当者</span>
-                    </div>
-                    <button class="action-btn" aria-label="閱讀更多">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
-                </div>
-            </article>
-        </div>
-    </main>
-
-    <!-- Right Sidebar -->
-    <aside class="sidebar">
-        <h2 class="section-title"><span class="dot"></span>人気記事ランキング</h2>
-        
-        <div class="ranking-list">
-            <!-- Rank 1 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=200&auto=format&fit=crop" alt="抽象科技">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge top-3">1位</span>
-                        <span class="ranking-date">公開日 2026.03.24</span>
-                    </div>
-                    <h3 class="ranking-title">サステナビリティの投資対効果が説明できない本当の理由 〜企業の資本と社会インフラの関係〜</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Rank 2 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=200&auto=format&fit=crop" alt="回收物">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge top-3">2位</span>
-                        <span class="ranking-date">更新日 2026.04.21 &nbsp; 公開日 2026.04.08</span>
-                    </div>
-                    <h3 class="ranking-title">廃棄物管理の実務理解度テスト【2026年4月版】</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Rank 3 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?q=80&w=200&auto=format&fit=crop" alt="廢棄物處理場">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge top-3">3位</span>
-                        <span class="ranking-date">公開日 2026.01.19</span>
-                    </div>
-                    <h3 class="ranking-title">廃棄物処理法違反を防ぐには？不法投棄の責任や契約書の義務を実務テストで解説</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Rank 4 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=200&auto=format&fit=crop" alt="三人合照">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge others">4位</span>
-                        <span class="ranking-date">更新日 2026.04.22 &nbsp; 公開日 2026.04.16</span>
-                    </div>
-                    <h3 class="ranking-title">環境省「資源循環課」が目指す、日本版サーキュラーエコノミーの未来 〜「規制」から「価値創造」へ〜</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Rank 5 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=200&auto=format&fit=crop" alt="數據圖表">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge others">5位</span>
-                        <span class="ranking-date">更新日 2026.04.22 &nbsp; 公開日 2026.02.20</span>
-                    </div>
-                    <h3 class="ranking-title">グローバル循環プロトコル（GCP）とは？（後編）ー GCP導入の実務的ステップと企業への影響ー</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-        </div>
-
-        <div class="sidebar-banner">
-             <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=150&auto=format&fit=crop" alt="鍵盤輸入">
-        </div>
-    </aside>
-</div>
-
-</body>
-</html>
+                  // 頁面載入時執行
+                  document.addEventListener('DOMContentLoaded', fetchPosts);
+          </script>
+    </body>
+</html>html>
+          </script>
+              </footer></p></h1>
+                  </header>
+    </body>
+      </style></title>
+    </head>
