@@ -1,112 +1,139 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-    <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>最新文章</title>
-      <style>
-              * { margin: 0; padding: 0; box-sizing: border-box; }
-              body { font-family: 'Noto Sans TC', sans-serif; color: #333; background: #fff; padding: 40px 20px; }
-              .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 40px; }
-              .main { flex: 1; }
-              .title { font-size: 18px; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
-              .dot { width: 10px; height: 10px; background: #c93636; border-radius: 50%; }
-              .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-              .post { border: 1px dotted #ccc; padding: 20px; display: flex; flex-direction: column; }
-              .post-img { width: 100%; height: 200px; background: #f5f5f5; margin-bottom: 15px; }
-              .post-img img { width: 100%; height: 100%; object-fit: cover; }
-              .post-date { font-size: 11px; color: #777; margin-bottom: 8px; }
-              .post-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; }
-              .post-text { font-size: 13px; color: #666; margin-bottom: 15px; flex: 1; }
-              .post-footer { display: flex; justify-content: space-between; align-items: center; }
-              .tag { background: #fbecec; color: #666; font-size: 10px; padding: 4px 8px; border-radius: 12px; }
-              .btn { background: #c93636; color: white; border: none; width: 40px; height: 24px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-              .btn:hover { background: #a82a2a; }
-              .sidebar { width: 360px; border-left: 2px solid #f0f0f0; padding-left: 30px; }
-              .rank-list { display: flex; flex-direction: column; }
-              .rank-item { display: flex; gap: 15px; padding: 20px 0; border-bottom: 1px dotted #ccc; }
-              .rank-item:first-child { padding-top: 0; }
-              .rank-img { width: 100px; height: 65px; background: #f5f5f5; border-radius: 4px; }
-              .rank-img img { width: 100%; height: 100%; object-fit: cover; }
-              .rank-info { flex: 1; }
-              .rank-no { font-weight: bold; color: #c93636; font-size: 12px; margin-bottom: 4px; }
-              .rank-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-              .rank-date { font-size: 10px; color: #999; }
-              .loading { text-align: center; padding: 40px; color: #666; }
-              @media (max-width: 768px) { .container { flex-direction: column; } .sidebar { width: 100%; border-left: none; border-top: 2px solid #f0f0f0; padding: 30px 0 0 0; } .grid { grid-template-columns: 1fr; } }
-            </style>
-    </head>
-    <body>
-          <div class="container">
-                  <div class="main">
-                            <div class="title"><span class="dot"></span>span><span>最新文章</span></div>div>
-                        <div id="loading" class="loading">加載中...</div>div>
-                        <div id="error" style="color: #c93636; padding: 20px; background: #fff5f5; border-radius: 4px; margin-bottom: 20px; display: none;"></div>div>
-                        <div class="grid" id="grid"></div>div>
-                  </div>div>
-              <div class="sidebar">
-                    <div class="title"><span class="dot"></span><span>熱門排行</span></div>div>
-                    <div class="rank-list" id="ranking"></div>
-              </div>div>
-          </div>div>
-    
-      <script>
-              const API = 'https://blog.nudot.com.tw/wp-json/wp/v2/posts';
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>最新文章</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans TC', sans-serif; color: #333; background: #fff; padding: 40px 20px; }
+    .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 40px; }
+    .main { flex: 1; }
+    .title { font-size: 18px; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+    .dot { width: 10px; height: 10px; background: #c93636; border-radius: 50%; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .post { border: 1px dotted #ccc; padding: 20px; display: flex; flex-direction: column; }
+    .post-img { width: 100%; height: 200px; background: #f5f5f5; margin-bottom: 15px; }
+    .post-img img { width: 100%; height: 100%; object-fit: cover; }
+    .post-date { font-size: 11px; color: #777; margin-bottom: 8px; }
+    .post-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; }
+    .post-text { font-size: 13px; color: #666; margin-bottom: 15px; flex: 1; }
+    .post-footer { display: flex; justify-content: space-between; align-items: center; }
+    .tag { background: #fbecec; color: #666; font-size: 10px; padding: 4px 8px; border-radius: 12px; }
+    .btn { background: #c93636; color: white; border: none; width: 40px; height: 24px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .btn:hover { background: #a82a2a; }
+    .sidebar { width: 360px; border-left: 2px solid #f0f0f0; padding-left: 30px; }
+    .rank-list { display: flex; flex-direction: column; }
+    .rank-item { display: flex; gap: 15px; padding: 20px 0; border-bottom: 1px dotted #ccc; }
+    .rank-item:first-child { padding-top: 0; }
+    .rank-img { width: 100px; height: 65px; background: #f5f5f5; border-radius: 4px; flex-shrink: 0; }
+    .rank-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+    .rank-info { flex: 1; }
+    .rank-no { font-weight: bold; color: #c93636; font-size: 12px; margin-bottom: 4px; }
+    .rank-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .rank-date { font-size: 10px; color: #999; }
+    .loading { text-align: center; padding: 40px; color: #666; }
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      .sidebar { width: 100%; border-left: none; border-top: 2px solid #f0f0f0; padding: 30px 0 0 0; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="main">
+      <div class="title"><span class="dot"></span><span>最新文章</span></div>
+      <div id="loading" class="loading">載入中...</div>
+      <div id="error" style="color: #c93636; padding: 20px; background: #fff5f5; border-radius: 4px; margin-bottom: 20px; display: none;"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+    <div class="sidebar">
+      <div class="title"><span class="dot"></span><span>熱門排行</span></div>
+      <div class="rank-list" id="ranking"></div>
+    </div>
+  </div>
 
-              function stripHtml(html) {
-                        const div = document.createElement('div');
-                        div.innerHTML = html;
-                        return div.textContent || '';
-              }
+  <script>
+    const API = 'https://blog.nudot.com.tw/wp-json/wp/v2/posts?per_page=6&_embed';
+    const PLACEHOLDER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="100%" height="100%" fill="#f5f5f5"/><text x="50%" y="50%" fill="#bbb" font-size="20" text-anchor="middle" dominant-baseline="middle">Blog</text></svg>'
+    );
 
-              function formatDate(date) {
-                        const d = new Date(date);
-                        return `${d.getFullYear()}年${String(d.getMonth() + 1).padStart(2, '0')}月${String(d.getDate()).padStart(2, '0')}日`;
-              }
+    function stripHtml(html) {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      return div.textContent || '';
+    }
 
-              async function load() {
-                        try {
-                                    const res = await fetch(API);
-                                    if (!res.ok) throw new Error('加載失敗');
-                                    const posts = await res.json();
-                                    document.getElementById('loading').style.display = 'none';
-                                    if (!posts.length) {
-                                                  document.getElementById('grid').innerHTML = '暫無文章';
-                                                  return;
-                                    }
-                                    document.getElementById('grid').innerHTML = posts.map(p => `
-                                              <div class="post">
-                                                          <div class="post-img"><img src="https://via.placeholder.com/300x200?text=Blog" alt="" onerror="this.src='https://via.placeholder.com/300x200?text=Blog'"></div>
-                                                                      <div class="post-date">${formatDate(p.date)}</div>
-                                                                                  <div class="post-title">${stripHtml(p.title.rendered)}</div>
-                                                                                              <div class="post-text">${stripHtml(p.content.rendered).substring(0, 100)}...</div>
-                                                                                                          <div class="post-footer">
-                                                                                                                        <span class="tag">文章</span>
-                                                                                                                                      <button class="btn" onclick="window.open('${p.link}', '_blank')">${'&rarr;'}</button>
-                                                                                                                                                  </div>
-                                                                                                                                                            </div>
-                                                                                                                                                                    `).join('');
-                                    document.getElementById('ranking').innerHTML = posts.slice(0, 3).map((p, i) => `
-                                              <div class="rank-item">
-                                                          <div class="rank-img"><img src="https://via.placeholder.com/100x65?text=Blog" alt="" onerror="this.src='https://via.placeholder.com/100x65?text=Blog'"></div>
-                                                                      <div class="rank-info">
-                                                                                    <div class="rank-no">${['\ud83e\udd47', '\ud83e\udd48', '\ud83e\udd49'][i]} 第 ${i + 1} 名</div>
-                                                                                                  <div class="rank-title">${stripHtml(p.title.rendered)}</div>
-                                                                                                                <div class="rank-date">${formatDate(p.date)}</div>
-                                                                                                                            </div>
-                                                                                                                                      </div>
-                                                                                                                                              `).join('');
-                        } catch (e) {
-                                    document.getElementById('loading').style.display = 'none';
-                                    document.getElementById('error').style.display = 'block';
-                                    document.getElementById('error').textContent = '需節避誤: ' + e.message;
-                        }
-              }
-              document.addEventListener('DOMContentLoaded', load);
-      </script>
-    </body>
-</html>html>
-      </script></span></span>
-    </body>
-      </style></title>
-    </head>
+    // 轉義使用者內容，避免插入 innerHTML 時造成 XSS
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function formatDate(date) {
+      const d = new Date(date);
+      return `${d.getFullYear()}年${String(d.getMonth() + 1).padStart(2, '0')}月${String(d.getDate()).padStart(2, '0')}日`;
+    }
+
+    // 從 _embed 取出精選圖片，沒有就用 placeholder
+    function featuredImage(post) {
+      const media = post._embedded && post._embedded['wp:featuredmedia'];
+      return (media && media[0] && media[0].source_url) || PLACEHOLDER;
+    }
+
+    function renderPosts(posts) {
+      document.getElementById('grid').innerHTML = posts.map(p => `
+        <div class="post">
+          <div class="post-img"><img src="${escapeHtml(featuredImage(p))}" alt="" onerror="this.src='${PLACEHOLDER}'"></div>
+          <div class="post-date">${formatDate(p.date)}</div>
+          <div class="post-title">${escapeHtml(stripHtml(p.title.rendered))}</div>
+          <div class="post-text">${escapeHtml(stripHtml(p.content.rendered).substring(0, 100))}...</div>
+          <div class="post-footer">
+            <span class="tag">文章</span>
+            <button class="btn" onclick="window.open('${encodeURI(p.link)}', '_blank')" aria-label="閱讀更多">&rarr;</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderRanking(posts) {
+      const medals = ['🥇', '🥈', '🥉'];
+      document.getElementById('ranking').innerHTML = posts.slice(0, 3).map((p, i) => `
+        <div class="rank-item">
+          <div class="rank-img"><img src="${escapeHtml(featuredImage(p))}" alt="" onerror="this.src='${PLACEHOLDER}'"></div>
+          <div class="rank-info">
+            <div class="rank-no">${medals[i]} 第 ${i + 1} 名</div>
+            <div class="rank-title">${escapeHtml(stripHtml(p.title.rendered))}</div>
+            <div class="rank-date">${formatDate(p.date)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function load() {
+      try {
+        const res = await fetch(API);
+        if (!res.ok) throw new Error('伺服器回應 ' + res.status);
+        const posts = await res.json();
+        document.getElementById('loading').style.display = 'none';
+        if (!posts.length) {
+          document.getElementById('grid').innerHTML = '暫無文章';
+          return;
+        }
+        renderPosts(posts);
+        renderRanking(posts);
+      } catch (e) {
+        document.getElementById('loading').style.display = 'none';
+        const err = document.getElementById('error');
+        err.style.display = 'block';
+        err.textContent = '載入錯誤: ' + e.message;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>
