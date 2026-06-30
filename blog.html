@@ -1,119 +1,112 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Column Layout</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; color: #333; background-color: #fff; line-height: 1.5; padding: 40px 20px; }
-        .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 40px; align-items: flex-start; }
-        .main-content { flex: 1; min-width: 0; }
-        .section-title { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 10px; margin-bottom: 25px; color: #333; }
-        .section-title .dot { display: inline-block; width: 10px; height: 10px; background-color: #c93636; border-radius: 50%; }
-        .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .card { border: 1px dotted #ccc; padding: 20px; display: flex; flex-direction: column; background-color: #fff; }
-        .card-image-wrap { width: 100%; height: 200px; margin-bottom: 15px; overflow: hidden; background-color: #f5f5f5; }
-        .card-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .card-date { font-size: 11px; color: #777; margin-bottom: 12px; }
-        .card-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; line-height: 1.4; color: #222; }
-        .card-excerpt { font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 15px; }
-        .card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; }
-        .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag { background-color: #fbecec; color: #666; font-size: 10px; padding: 4px 8px; border-radius: 12px; white-space: nowrap; }
-        .action-btn { background-color: #c93636; border: none; width: 40px; height: 24px; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; transition: background-color 0.2s; }
-        .action-btn:hover { background-color: #a82a2a; }
-        .action-btn svg { width: 14px; height: 14px; stroke: #fff; }
-        .sidebar { width: 360px; flex-shrink: 0; border-left: 2px solid #f0f0f0; padding-left: 30px; }
-        .ranking-list { display: flex; flex-direction: column; }
-        .ranking-item { display: flex; gap: 15px; padding: 20px 0; border-bottom: 1px dotted #ccc; }
-        .ranking-item:first-child { padding-top: 0; }
-        .ranking-img-wrap { width: 100px; height: 65px; border-radius: 4px; overflow: hidden; flex-shrink: 0; background-color: #f5f5f5; }
-        .ranking-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .ranking-content { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-        .ranking-rank { font-weight: bold; color: #c93636; font-size: 12px; margin-bottom: 4px; }
-        .ranking-title { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; color: #222; }
-        .ranking-date { font-size: 10px; color: #999; }
-        .loading { text-align: center; padding: 40px; color: #666; }
-        .error-message { color: #c93636; padding: 20px; background-color: #fff5f5; border-radius: 4px; margin-bottom: 20px; }
-        @media (max-width: 768px) { .container { flex-direction: column; gap: 20px; } .sidebar { width: 100%; border-left: none; border-top: 2px solid #f0f0f0; padding-left: 0; padding-top: 30px; } .card-grid { grid-template-columns: 1fr; }}
-        </style>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>最新文章</title>
+      <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { font-family: 'Noto Sans TC', sans-serif; color: #333; background: #fff; padding: 40px 20px; }
+              .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 40px; }
+              .main { flex: 1; }
+              .title { font-size: 18px; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+              .dot { width: 10px; height: 10px; background: #c93636; border-radius: 50%; }
+              .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+              .post { border: 1px dotted #ccc; padding: 20px; display: flex; flex-direction: column; }
+              .post-img { width: 100%; height: 200px; background: #f5f5f5; margin-bottom: 15px; }
+              .post-img img { width: 100%; height: 100%; object-fit: cover; }
+              .post-date { font-size: 11px; color: #777; margin-bottom: 8px; }
+              .post-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; }
+              .post-text { font-size: 13px; color: #666; margin-bottom: 15px; flex: 1; }
+              .post-footer { display: flex; justify-content: space-between; align-items: center; }
+              .tag { background: #fbecec; color: #666; font-size: 10px; padding: 4px 8px; border-radius: 12px; }
+              .btn { background: #c93636; color: white; border: none; width: 40px; height: 24px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+              .btn:hover { background: #a82a2a; }
+              .sidebar { width: 360px; border-left: 2px solid #f0f0f0; padding-left: 30px; }
+              .rank-list { display: flex; flex-direction: column; }
+              .rank-item { display: flex; gap: 15px; padding: 20px 0; border-bottom: 1px dotted #ccc; }
+              .rank-item:first-child { padding-top: 0; }
+              .rank-img { width: 100px; height: 65px; background: #f5f5f5; border-radius: 4px; }
+              .rank-img img { width: 100%; height: 100%; object-fit: cover; }
+              .rank-info { flex: 1; }
+              .rank-no { font-weight: bold; color: #c93636; font-size: 12px; margin-bottom: 4px; }
+              .rank-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+              .rank-date { font-size: 10px; color: #999; }
+              .loading { text-align: center; padding: 40px; color: #666; }
+              @media (max-width: 768px) { .container { flex-direction: column; } .sidebar { width: 100%; border-left: none; border-top: 2px solid #f0f0f0; padding: 30px 0 0 0; } .grid { grid-template-columns: 1fr; } }
+            </style>
     </head>
     <body>
-        <div class="container">
-            <div class="main-content">
-                <div class="section-title"><span class="dot"></span>span><span>最新文章</span></div>div>
-            <div id="posts-loading" class="loading">加載中...</div>div>
-            <div id="error-message"></div>div>
-            <div class="card-grid" id="card-grid"></div>div>
-            </div>div>
-        <div class="sidebar">
-        <div class="section-title"><span class="dot"></span><span>熱門排行</span></div>div>
-        <div id="ranking-list" class="ranking-list"></div>div>
-        </div>div>
-        </div>div>
+          <div class="container">
+                  <div class="main">
+                            <div class="title"><span class="dot"></span>span><span>最新文章</span></div>div>
+                        <div id="loading" class="loading">加載中...</div>div>
+                        <div id="error" style="color: #c93636; padding: 20px; background: #fff5f5; border-radius: 4px; margin-bottom: 20px; display: none;"></div>div>
+                        <div class="grid" id="grid"></div>div>
+                  </div>div>
+              <div class="sidebar">
+                    <div class="title"><span class="dot"></span><span>熱門排行</span></div>div>
+                    <div class="rank-list" id="ranking"></div>div>
+              </div>div>
+          </div>div>
     
-    <script>
-        const WORDPRESS_API = 'https://blog.nudot.com.tw/wp-json/wp/v2/posts';
+      <script>
+              const API = 'https://blog.nudot.com.tw/wp-json/wp/v2/posts';
 
-        function stripHtml(html) {
-            const div = document.createElement('div');
-            div.innerHTML = html;
-            return div.textContent || div.innerText || '';
-        }
+              function stripHtml(html) {
+                        const div = document.createElement('div');
+                        div.innerHTML = html;
+                        return div.textContent || '';
+              }
 
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}年${month}月${day}日`;
-        }
+              function formatDate(date) {
+                        const d = new Date(date);
+                        return `${d.getFullYear()}年${String(d.getMonth() + 1).padStart(2, '0')}月${String(d.getDate()).padStart(2, '0')}日`;
+              }
 
-        function getFeaturedImage(post) {
-            return 'https://via.placeholder.com/300x200?text=Blog';
-        }
-
-        async function loadPosts() {
-            try {
-                const response = await fetch(WORDPRESS_API);
-                if (!response.ok) throw new Error('不能加載文章');
-                const posts = await response.json();
-                const container = document.getElementById('card-grid');
-                const loadingDiv = document.getElementById('posts-loading');
-                loadingDiv.style.display = 'none';
-                if (!Array.isArray(posts) || posts.length === 0) {
-                    container.innerHTML = '<p>暫無文章</p>';
-                    return;
-                }
-                container.innerHTML = posts.map(post => {
-                    const title = stripHtml(post.title.rendered);
-                    const content = stripHtml(post.content.rendered);
-                    const excerpt = content.substring(0, 100) + '...';
-                    const date = formatDate(post.date);
-                    return `<div class="card"><div class="card-image-wrap"><img src="${getFeaturedImage(post)}" alt="${title}" onerror="this.src='https://via.placeholder.com/300x200?text=Blog'"></div><div class="card-date">${date}</div><div class="card-title">${title}</div><div class="card-excerpt">${excerpt}</div><div class="card-footer"><div class="tags-wrap"><span class="tag">文章</span></div><button class="action-btn" onclick="window.open('${post.link}', '_blank')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></button></div></div>`;
-                }).join('');
-                const rankingList = document.getElementById('ranking-list');
-                rankingList.innerHTML = posts.slice(0, 3).map((post, index) => {
-                    const title = stripHtml(post.title.rendered);
-                    const date = formatDate(post.date);
-                    const rankingNo = ['🥇', '🥈', '🥉'][index];
-                    return `<div class="ranking-item"><div class="ranking-img-wrap"><img src="${getFeaturedImage(post)}" alt="${title}" onerror="this.src='https://via.placeholder.com/100x65?text=Blog'"></div><div class="ranking-content"><div class="ranking-rank">${rankingNo} 第 ${index + 1} 名</div><div class="ranking-title">${title}</div><div class="ranking-date">${date}</div></div></div>`;
-                }).join('');
-            } catch (error) {
-                console.error('Error loading posts:', error);
-                const errorDiv = document.getElementById('error-message');
-                errorDiv.innerHTML = `<div class="error-message">無法加載文章: ${error.message}</div>`;
-                const loadingDiv = document.getElementById('posts-loading');
-                loadingDiv.style.display = 'none';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', loadPosts);
-    </script>
+              async function load() {
+                        try {
+                                    const res = await fetch(API);
+                                    if (!res.ok) throw new Error('加載失敗');
+                                    const posts = await res.json();
+                                    document.getElementById('loading').style.display = 'none';
+                                    if (!posts.length) {
+                                                  document.getElementById('grid').innerHTML = '暫無文章';
+                                                  return;
+                                    }
+                                    document.getElementById('grid').innerHTML = posts.map(p => `
+                                              <div class="post">
+                                                          <div class="post-img"><img src="https://via.placeholder.com/300x200?text=Blog" alt="" onerror="this.src='https://via.placeholder.com/300x200?text=Blog'"></div>
+                                                                      <div class="post-date">${formatDate(p.date)}</div>
+                                                                                  <div class="post-title">${stripHtml(p.title.rendered)}</div>
+                                                                                              <div class="post-text">${stripHtml(p.content.rendered).substring(0, 100)}...</div>
+                                                                                                          <div class="post-footer">
+                                                                                                                        <span class="tag">文章</span>
+                                                                                                                                      <button class="btn" onclick="window.open('${p.link}', '_blank')">${'&rarr;'}</button>
+                                                                                                                                                  </div>
+                                                                                                                                                            </div>
+                                                                                                                                                                    `).join('');
+                                    document.getElementById('ranking').innerHTML = posts.slice(0, 3).map((p, i) => `
+                                              <div class="rank-item">
+                                                          <div class="rank-img"><img src="https://via.placeholder.com/100x65?text=Blog" alt="" onerror="this.src='https://via.placeholder.com/100x65?text=Blog'"></div>
+                                                                      <div class="rank-info">
+                                                                                    <div class="rank-no">${['\ud83e\udd47', '\ud83e\udd48', '\ud83e\udd49'][i]} 第 ${i + 1} 名</div>
+                                                                                                  <div class="rank-title">${stripHtml(p.title.rendered)}</div>
+                                                                                                                <div class="rank-date">${formatDate(p.date)}</div>
+                                                                                                                            </div>
+                                                                                                                                      </div>
+                                                                                                                                              `).join('');
+                        } catch (e) {
+                                    document.getElementById('loading').style.display = 'none';
+                                    document.getElementById('error').style.display = 'block';
+                                    document.getElementById('error').textContent = '需節避誤: ' + e.message;
+                        }
+              }
+              document.addEventListener('DOMContentLoaded', load);
+      </script>
     </body>
 </html>html>
-    </script></span></span>
+      </script></span></span>
     </body>
-    </style></title>
+      </style></title>
     </head>
