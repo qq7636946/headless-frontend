@@ -1,0 +1,17 @@
+{
+    "builds": [
+          {
+                  "src": "blog.html",
+                  "use": "@vercel/static"
+          }
+    ],
+    "routes": [
+          {
+                  "src": "/",
+                  "dest": "/blog.html"
+          }
+    ],
+    "env": {
+          "NEXT_PUBLIC_WP_API_URL": "https://blog.nudot.com.tw/wp-json"
+    }
+}
