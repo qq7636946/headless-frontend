@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Column Layout</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Column Layout</title>
     <style>
         /* Base Reset */
         * {
@@ -31,7 +31,7 @@
         /* --- Main Content (Left) --- */
         .main-content {
             flex: 1;
-            min-width: 0; /* Prevent flex blowout */
+            min-width: 0;
         }
 
         .section-title {
@@ -117,7 +117,6 @@
             white-space: nowrap;
         }
 
-        /* --- Action Button (Red with Arrow) --- */
         .action-btn {
             background-color: #c93636;
             border: none;
@@ -142,7 +141,6 @@
             stroke: #fff;
         }
 
-        /* --- Sidebar (Right) --- */
         .sidebar {
             width: 360px;
             flex-shrink: 0;
@@ -182,299 +180,198 @@
         }
 
         .ranking-content {
+            flex: 1;
+            min-width: 0;
             display: flex;
             flex-direction: column;
-            flex: 1;
+            justify-content: center;
         }
 
-        .ranking-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
-
-        .rank-badge {
-            font-size: 10px;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 2px;
+        .ranking-rank {
             font-weight: bold;
-        }
-
-        .rank-badge.top-3 {
-            background-color: #a88659;
-        }
-
-        .rank-badge.others {
-            background-color: #a0a0a0;
-        }
-
-        .ranking-date {
-            font-size: 10px;
-            color: #777;
+            color: #c93636;
+            font-size: 12px;
+            margin-bottom: 4px;
         }
 
         .ranking-title {
             font-size: 13px;
-            font-weight: bold;
-            line-height: 1.4;
-            margin-bottom: 10px;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 6px;
             color: #222;
         }
 
-        .ranking-action {
-            margin-top: auto;
-            display: flex;
-            justify-content: flex-end;
+        .ranking-date {
+            font-size: 10px;
+            color: #999;
         }
 
-        /* --- Sidebar Banner --- */
-        .sidebar-banner {
-            margin-top: 30px;
-            border: 1px solid #c93636;
-            border-radius: 4px;
-            padding: 15px;
-            height: 100px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .sidebar-banner img {
-            width: 70px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-            background-color: #eee;
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 992px) {
+        .error-message {
+            color: #c93636;
+            padding: 20px;
+            background-color: #fff5f5;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
             .container {
                 flex-direction: column;
+                gap: 20px;
             }
+
             .sidebar {
                 width: 100%;
                 border-left: none;
-                padding-left: 0;
                 border-top: 2px solid #f0f0f0;
+                padding-left: 0;
                 padding-top: 30px;
-                margin-top: 20px;
             }
-        }
 
-        @media (max-width: 600px) {
             .card-grid {
                 grid-template-columns: 1fr;
             }
         }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <!-- Left Main Content -->
-    <main class="main-content">
-        <h2 class="section-title"><span class="dot"></span>おしアミ新着コラム</h2>
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="section-title">
+                    <span class="dot"></span>span>
+                    <span>最新文章</span>
+                </div>div>
+            <div id="posts-loading" class="loading">加載中...</div>div>
+            <div id="error-message"></div>div>
+            <div class="card-grid" id="card-grid"></div>div>
+            </div>div>
         
-        <div class="card-grid">
-            <!-- Card 1 -->
-            <article class="card">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&auto=format&fit=crop" alt="オシンテックのやさしい循環経済コラム">
-                </div>
-                <div class="card-date">公開日 2026.06.23</div>
-                <h3 class="card-title">ドイツの「身近な栄養循環」｜ オシンテックのやさしい循環経済コラム</h3>
-                <div class="card-footer">
+        <!-- Sidebar -->
+        <div class="sidebar">
+        <div class="section-title">
+        <span class="dot"></span>
+        <span>熱門排行</span>
+        </div>div>
+        <div id="ranking-list" class="ranking-list"></div>div>
+        </div>div>
+        </div>div>
+    
+    <script>
+        const WORDPRESS_API = 'https://blog.nudot.com.tw/wp-json/wp/v2/posts';
+
+        // Strip HTML tags from text
+        function stripHtml(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return div.textContent || div.innerText || '';
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
+        }
+
+        // Get featured image from post
+        function getFeaturedImage(post) {
+            if (post._links && post._links['wp:featuredmedia']) {
+                return 'https://via.placeholder.com/300x200?text=Blog';
+            }
+            return 'https://via.placeholder.com/300x200?text=Blog';
+        }
+
+        // Load and display posts
+        async function loadPosts() {
+            try {
+                const response = await fetch(WORDPRESS_API);
+                if (!response.ok) throw new Error('Failed to fetch posts');
+
+                const posts = await response.json();
+                const container = document.getElementById('card-grid');
+                const loadingDiv = document.getElementById('posts-loading');
+
+                loadingDiv.style.display = 'none';
+
+                if (!Array.isArray(posts) || posts.length === 0) {
+                    container.innerHTML = '<p>暫無文章</p>';
+                    return;
+                }
+
+                // Display all posts in grid
+                container.innerHTML = posts.map((post, index) => {
+                    const title = stripHtml(post.title.rendered);
+                    const excerpt = stripHtml(post.excerpt.rendered || post.content.rendered).substring(0, 100) + '...';
+                    const date = formatDate(post.date);
+
+                    return `
+                    <div class="card">
+                    <div class="card-image-wrap">
+                    <img src="${getFeaturedImage(post)}" alt="${title}" onerror="this.src='https://via.placeholder.com/300x200?text=Blog'">
+                    </div>
+                    <div class="card-date">${date}</div>
+                    <div class="card-title">${title}</div>
+                    <div class="card-excerpt">${excerpt}</div>
+                    <div class="card-footer">
                     <div class="tags-wrap">
-                        <span class="tag">#クリティカルミネラル</span>
-                        <span class="tag">#サーキュラーエコノミー</span>
-                        <span class="tag">#環境部門長・マネージャー</span>
-                        <span class="tag">#環境・CSRご担当者</span>
-                        <span class="tag">#海外環境ご担当者</span>
+                    <span class="tag">文章</span>
                     </div>
-                    <button class="action-btn" aria-label="閱讀更多">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    <button class="action-btn" onclick="window.open('${post.link}', '_blank')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"></path>
+                    </svg>
                     </button>
-                </div>
-            </article>
+                    </div>
+                    </div>
+                    `;
+                }).join('');
 
-            <!-- Card 2 -->
-            <article class="card">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1534398079543-7ae6d016b86a?q=80&w=600&auto=format&fit=crop" alt="都市の風景">
-                </div>
-                <div class="card-date">更新日 2026.05.27 &nbsp; 公開日 2026.05.25</div>
-                <h3 class="card-title">「循環経済行動計画」で何が変わるのか——“資源制約時代”に、日本企業はどんな循環価値をつくるべきか</h3>
-                <div class="card-footer">
-                    <div class="tags-wrap">
-                        <span class="tag">#サーキュラーデザイン</span>
-                        <span class="tag">#サーキュラーエコノミー</span>
-                        <span class="tag">#廃棄物管理</span>
-                        <span class="tag">#循環型ビジネス</span>
-                        <span class="tag">#廃棄物管理ご担当者</span>
-                        <span class="tag">#環境部門長・マネージャー</span>
-                        <span class="tag">#経営者・役員</span>
-                        <span class="tag">#環境・CSRご担当者</span>
-                    </div>
-                    <button class="action-btn" aria-label="閱讀更多">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
-                </div>
-            </article>
+                // Display ranking list (top 3 posts)
+                const rankingList = document.getElementById('ranking-list');
+                rankingList.innerHTML = posts.slice(0, 3).map((post, index) => {
+                    const title = stripHtml(post.title.rendered);
+                    const date = formatDate(post.date);
+                    const rankingNo = ['🥇', '🥈', '🥉'][index];
 
-            <!-- Card 3 -->
-            <article class="card">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=600&auto=format&fit=crop" alt="白板討論">
-                </div>
-                <div class="card-date">公開日 2026.05.22</div>
-                <h3 class="card-title">SSBJ時代に問われる「価値創造の見取り図」〜「開示に対応する企業」と「価値創造を語る企業」の違い〜</h3>
-                <div class="card-footer">
-                    <div class="tags-wrap">
-                        <span class="tag">#移行戦略</span>
-                        <span class="tag">#ESG経営</span>
-                        <span class="tag">#サステナビリティ経営</span>
-                        <span class="tag">#循環型ビジネス</span>
-                        <span class="tag">#社会的インパクト評価</span>
-                        <span class="tag">#環境部門長・マネージャー</span>
-                        <span class="tag">#経営者・役員</span>
+                    return `
+                    <div class="ranking-item">
+                    <div class="ranking-img-wrap">
+                    <img src="${getFeaturedImage(post)}" alt="${title}" onerror="this.src='https://via.placeholder.com/100x65?text=Blog'">
                     </div>
-                    <button class="action-btn" aria-label="閱讀更多">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
-                </div>
-            </article>
+                    <div class="ranking-content">
+                    <div class="ranking-rank">${rankingNo} 第 ${index + 1} 名</div>
+                    <div class="ranking-title">${title}</div>
+                    <div class="ranking-date">${date}</div>
+                    </div>
+                    </div>
+                    `;
+                }).join('');
 
-            <!-- Card 4 -->
-            <article class="card">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&auto=format&fit=crop" alt="オシンテックのやさしい循環経済コラム">
-                </div>
-                <div class="card-date">更新日 2026.06.23 &nbsp; 公開日 2026.05.21</div>
-                <h3 class="card-title">ミラノで紹介された台湾の「循環村」は世界最先端｜オシンテックのやさしい循環経済コラム</h3>
-                <div class="card-footer">
-                    <div class="tags-wrap">
-                        <span class="tag">#サーキュラーデザイン</span>
-                        <span class="tag">#サーキュラーエコノミー</span>
-                        <span class="tag">#環境部門長・マネージャー</span>
-                        <span class="tag">#環境・CSRご担当者</span>
-                        <span class="tag">#海外環境ご担当者</span>
-                    </div>
-                    <button class="action-btn" aria-label="閱讀更多">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
-                </div>
-            </article>
-        </div>
-    </main>
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.innerHTML = `<div class="error-message">無法加載文章: ${error.message}</div>`;
+                const loadingDiv = document.getElementById('posts-loading');
+                loadingDiv.style.display = 'none';
+            }
+        }
 
-    <!-- Right Sidebar -->
-    <aside class="sidebar">
-        <h2 class="section-title"><span class="dot"></span>人気記事ランキング</h2>
-        
-        <div class="ranking-list">
-            <!-- Rank 1 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=200&auto=format&fit=crop" alt="抽象科技">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge top-3">1位</span>
-                        <span class="ranking-date">公開日 2026.03.24</span>
-                    </div>
-                    <h3 class="ranking-title">サステナビリティの投資対効果が説明できない本当の理由 〜企業の資本と社会インフラの関係〜</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Rank 2 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=200&auto=format&fit=crop" alt="回收物">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge top-3">2位</span>
-                        <span class="ranking-date">更新日 2026.04.21 &nbsp; 公開日 2026.04.08</span>
-                    </div>
-                    <h3 class="ranking-title">廃棄物管理の実務理解度テスト【2026年4月版】</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Rank 3 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?q=80&w=200&auto=format&fit=crop" alt="廢棄物處理場">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge top-3">3位</span>
-                        <span class="ranking-date">公開日 2026.01.19</span>
-                    </div>
-                    <h3 class="ranking-title">廃棄物処理法違反を防ぐには？不法投棄の責任や契約書の義務を実務テストで解説</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Rank 4 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=200&auto=format&fit=crop" alt="三人合照">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge others">4位</span>
-                        <span class="ranking-date">更新日 2026.04.22 &nbsp; 公開日 2026.04.16</span>
-                    </div>
-                    <h3 class="ranking-title">環境省「資源循環課」が目指す、日本版サーキュラーエコノミーの未来 〜「規制」から「価値創造」へ〜</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Rank 5 -->
-            <article class="ranking-item">
-                <div class="ranking-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=200&auto=format&fit=crop" alt="數據圖表">
-                </div>
-                <div class="ranking-content">
-                    <div class="ranking-meta">
-                        <span class="rank-badge others">5位</span>
-                        <span class="ranking-date">更新日 2026.04.22 &nbsp; 公開日 2026.02.20</span>
-                    </div>
-                    <h3 class="ranking-title">グローバル循環プロトコル（GCP）とは？（後編）ー GCP導入の実務的ステップと企業への影響ー</h3>
-                    <div class="ranking-action">
-                        <button class="action-btn" aria-label="閱讀更多">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-        </div>
-
-        <div class="sidebar-banner">
-             <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=150&auto=format&fit=crop" alt="鍵盤輸入">
-        </div>
-    </aside>
-</div>
-
-</body>
-</html>
+        // Load posts on page load
+        window.addEventListener('DOMContentLoaded', loadPosts);
+    </script>
+    </body>
+</html>html>
+    </script></span></span>
+    </body>
+    </style></title>
+    </head>
